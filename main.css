@@ -38,7 +38,7 @@ nav li {
 }
 
 .search {
-    margin-top: 75px;
+    margin-top: 60px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -75,8 +75,23 @@ nav li {
     justify-content: center;
 }
 .container {
-    margin-top: 50px;
+    margin-top: 40px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-gap: 10px;
+    grid-column-gap: 10px;
+    grid-row-gap: 50px;
+}
+
+img {
+    height: 300px;
+    width: 300px;
+}
+
+.favorite {
+    height: 50px;
+    width: 50px;
+    position: relative;
+    left: 125px;
+    bottom: 5px;
+
 }
