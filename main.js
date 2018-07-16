@@ -39,6 +39,7 @@ class Grid extends React.Component {
     renderBox(i) {
         return (
             <Box
+                key={i}
                 img={this.props.data[i]['attributes']['posterImage']['large']}
             />
         );
@@ -49,7 +50,7 @@ class Grid extends React.Component {
         console.log("grid data", this.props.data);
         for (let i = 0; i < this.props.data.length; i++) {
             res.push(
-            <div className="item">
+            <div key={i} className="item">
                 {this.renderBox(i)}
                 <img className="favorite" src="icons/unchecked_favorites.png" />
             </div>);
