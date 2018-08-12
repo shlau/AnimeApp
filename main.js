@@ -5,27 +5,7 @@ const wrapper = document.querySelector(".wrapper");
 const favButton = document.querySelector(".favorite");
 const searchButton = document.querySelector("#search");
 let xhr;
-/* const trending = JSON.parse(this.response);
-const data = trending['data'];
-for (i = 0; i < data.length; i++) {
-    console.log('slug ', data[i]['attributes']['slug']);
-    const image = data[i]['attributes']['posterImage']['large'];
-    images.push(`<div class="item"><img src="${image}"><img class="favorite" src="icons/unchecked_favorites.png"></div>`)
-}
-container.innerHTML = images.join(''); */
-/* window.onload = function () {
-    const request = new XMLHttpRequest();
-    request.open('GET', apiPath + '/trending/anime');
-    request.onreadystatechange = function () {
-        let images = [];
-        if (this.readyState === 4) {
-            trending = JSON.parse(this.response)['data'];
-            console.log('trending ready', trending);
-        }
-    };
 
-    request.send();
-} */
 class Search extends React.Component {
     render() {
         return (
@@ -39,11 +19,15 @@ class Search extends React.Component {
 function Box(props) {
 
     return (
-        <img src={props.img} />
+        <div>
+            <img src={props.img} />
+            <p>{props.title}</p>
+        </div>
     );
 }
 class Grid extends React.Component {
     renderBox(i) {
+        console.log("slug is", this.props.data[i]['attributes']['titles']['en']);
         return (
             <Box
                 key={i}
@@ -54,11 +38,17 @@ class Grid extends React.Component {
 
     render() {
         let res = []
+        let srcImg;
         for (let i = 0; i < this.props.data.length; i++) {
+            const match = this.props.favorites.filter(item => item == this.props.data[i]['attributes']['titles']['en']);
+            console.log("current is", this.props.data[i]);
+            console.log("favorites is", this.props.favorites);
+            match.length == 0 ? srcImg = "icons/unchecked_favorites.png" : srcImg = "icons/checked_favorites.png";
             res.push(
                 <div key={i} className="item">
+                    <p>{this.props.data[i]['attributes']['titles']['en']}</p>
                     {this.renderBox(i)}
-                    <img className="favorite" src="icons/unchecked_favorites.png" />
+                    <img onClick={()=>this.props.onClick(i)} className="favorite" src={srcImg} />
                 </div>);
         }
         return res;
@@ -68,12 +58,13 @@ class Display extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: Array(10).fill({ attributes: { posterImage: { large: "icons/loading_icon.png" } } }),
+            data: Array(10).fill({ attributes: { posterImage: { large: "icons/loading_icon.png" }, titles: { en: "loading" } } }),
             favorites: [],
 
         }
         this.handleSearchClick = this.handleSearchClick.bind(this);
         this.getData = this.getData.bind(this);
+        this.handleFavoriteClick = this.handleFavoriteClick.bind(this);
     }
 
     componentDidMount() {
@@ -85,16 +76,15 @@ class Display extends React.Component {
         });
     }
     handleFavoriteClick(i) {
-        const match = this.state.favorites.filter(item => item == this.state.data[i]);
+        const match = this.state.favorites.filter(item => item == this.state.data[i]['attributes']['titles']['en']);
         if (match.length == 0) {
-
             this.setState({
-                favorites: this.state.favorites.concat(this.state.data[i])
+                favorites: this.state.favorites.concat(this.state.data[i]['attributes']['titles']['en'])
             })
         }
         else {
             this.setState({
-                favorites: this.state.favorites.filter(item => item !== this.state.data[i])
+                favorites: this.state.favorites.filter(item => item !== this.state.data[i]['attributes']['titles']['en'])
             });
         }
     }
@@ -124,6 +114,8 @@ class Display extends React.Component {
             <div className="container">
                 <Grid
                     data={this.state.data}
+                    favorites={this.state.favorites}
+                    onClick = {i => this.handleFavoriteClick(i)}
                 />
             </div>
         );
