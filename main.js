@@ -27,7 +27,7 @@ function Box(props) {
 }
 class Grid extends React.Component {
     renderBox(i) {
-        console.log("slug is", this.props.data[i]['attributes']['titles']['en']);
+/*         console.log("slug is", this.props.data[i]['attributes']['titles']['en']); */
         return (
             <Box
                 key={i}
@@ -40,13 +40,15 @@ class Grid extends React.Component {
         let res = []
         let srcImg;
         for (let i = 0; i < this.props.data.length; i++) {
-            const match = this.props.favorites.filter(item => item == this.props.data[i]['attributes']['titles']['en']);
-            console.log("current is", this.props.data[i]);
-            console.log("favorites is", this.props.favorites);
+            const match = this.props.favorites.filter(item => item == this.props.data[i]['id']);
+/*             console.log("current is", this.props.data[i]);
+            console.log("favorites is", this.props.favorites); */
             match.length == 0 ? srcImg = "icons/unchecked_favorites.png" : srcImg = "icons/checked_favorites.png";
+            const titles = this.props.data[i]['attributes']['titles'];
+            const first = titles[Object.keys(titles)[0]];
             res.push(
                 <div key={i} className="item">
-                    <p>{this.props.data[i]['attributes']['titles']['en']}</p>
+                    <p>{first}</p>
                     {this.renderBox(i)}
                     <img onClick={()=>this.props.onClick(i)} className="favorite" src={srcImg} />
                 </div>);
@@ -58,7 +60,7 @@ class Display extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: Array(10).fill({ attributes: { posterImage: { large: "icons/loading_icon.png" }, titles: { en: "loading" } } }),
+            data: Array(10).fill({ id: 0, attributes: { posterImage: { large: "icons/loading_icon.png" }, titles: { en_us: "loading", en_jp:"loading", en:"loading" } } }),
             favorites: [],
 
         }
@@ -76,15 +78,15 @@ class Display extends React.Component {
         });
     }
     handleFavoriteClick(i) {
-        const match = this.state.favorites.filter(item => item == this.state.data[i]['attributes']['titles']['en']);
+        const match = this.state.favorites.filter(item => item == this.state.data[i]['id']);
         if (match.length == 0) {
             this.setState({
-                favorites: this.state.favorites.concat(this.state.data[i]['attributes']['titles']['en'])
+                favorites: this.state.favorites.concat(this.state.data[i]['id'])
             })
         }
         else {
             this.setState({
-                favorites: this.state.favorites.filter(item => item !== this.state.data[i]['attributes']['titles']['en'])
+                favorites: this.state.favorites.filter(item => item !== this.state.data[i]['id'])
             });
         }
     }
@@ -99,7 +101,7 @@ class Display extends React.Component {
     }
 
     handleSearchClick(terms) {
-        console.log("search Clicked!: ", terms);
+ /*        console.log("search Clicked!: ", terms); */
         const query = terms.replace(' ', '%20');
         xhr = new XMLHttpRequest();
         xhr.open('GET', apiPath + '/anime?filter[text]=' + query);
@@ -130,7 +132,7 @@ class App extends React.Component {
         }
     }
     myCallback = (dataFromChild) => {
-        console.log("callback enabled!", dataFromChild);
+/*         console.log("callback enabled!", dataFromChild); */
         this.setState({ childData: dataFromChild });
     }
     render() {

@@ -73,6 +73,7 @@ nav li {
 
 .item p {
     background:rgb(235, 42, 42);
+    height: 1.5em;
 }
 .wrapper {
     display:flex;
