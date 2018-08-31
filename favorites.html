@@ -6,12 +6,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="favorites.css" />
-    <script src="main.js"></script>
-    <script src="favorites.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
 </head>
 
 <body>
-    <p>This is the favorites page.</p>
+    <nav>
+        <h3>Anime</h3>
+        <ul>
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                <a id="fav" href="favorites.html">Favorites</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="favoritesList">
+
+    </div>
+</body>
+<script src="favorites.js"></script>
 
 </html>

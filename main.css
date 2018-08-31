@@ -92,9 +92,30 @@ nav li {
 
 img {
     height: 300px;
-    width: 100%;
+    width: 300px;
 }
 
+.favoriteSet p {
+    color: white;
+}
+.favoriteSet {
+    border-radius: 0.2em;
+    padding: 1em;
+    margin: 1em;
+    background: rgb(24, 85, 199);
+    height: 400px;
+    display: flex;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.synopsis {
+    font-size: 1.1em;
+    margin-top: 40px;
+    margin-left: 20px;
+}
 .favorite {
     height: 50px;
     width: 50px;
