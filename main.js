@@ -4,6 +4,7 @@ const apiPath = "https://kitsu.io/api/edge";
 const wrapper = document.querySelector(".wrapper");
 const favButton = document.querySelector(".favorite");
 const searchButton = document.querySelector("#search");
+let favList;
 let xhr;
 
 class Search extends React.Component {
@@ -13,7 +14,7 @@ class Search extends React.Component {
                 <input type="text" placeholder="Search for anime..." />
                 <button id="search" onClick={this.props.searchClick}>Search</button>
             </div>
-        )
+        );
     }
 }
 function Box(props) {
@@ -41,8 +42,9 @@ class Grid extends React.Component {
         let srcImg;
         for (let i = 0; i < this.props.data.length; i++) {
             const match = this.props.favorites.filter(item => item == this.props.data[i]['id']);
-/*             console.log("current is", this.props.data[i]);
-            console.log("favorites is", this.props.favorites); */
+            console.log("current is", this.props.data[i]);
+            console.log("favorites is", this.props.favorites);
+            console.log("match length:", match.length);
             match.length == 0 ? srcImg = "icons/unchecked_favorites.png" : srcImg = "icons/checked_favorites.png";
             const titles = this.props.data[i]['attributes']['titles'];
             const first = titles[Object.keys(titles)[0]];
@@ -56,13 +58,13 @@ class Grid extends React.Component {
         return res;
     }
 }
+
 class Display extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             data: Array(10).fill({ id: 0, attributes: { posterImage: { large: "icons/loading_icon.png" }, titles: { en_us: "loading", en_jp:"loading", en:"loading" } } }),
-            favorites: [],
-
+            favorites: localStorage.getItem("favArray") !== null ? localStorage['favArray'].split(',') : []
         }
         this.handleSearchClick = this.handleSearchClick.bind(this);
         this.getData = this.getData.bind(this);
@@ -70,6 +72,7 @@ class Display extends React.Component {
     }
 
     componentDidMount() {
+
         this.props.callback(this.handleSearchClick);
         $.getJSON(apiPath + '/trending/anime', (info) => {
             this.setState({
@@ -77,18 +80,25 @@ class Display extends React.Component {
             })
         });
     }
+    
     handleFavoriteClick(i) {
         const match = this.state.favorites.filter(item => item == this.state.data[i]['id']);
+        let res;
         if (match.length == 0) {
+            res = this.state.favorites.concat(this.state.data[i]['id']);
             this.setState({
-                favorites: this.state.favorites.concat(this.state.data[i]['id'])
-            })
+                favorites: res
+            });
+            
         }
         else {
+            res = this.state.favorites.filter(item => item !== this.state.data[i]['id']);
             this.setState({
-                favorites: this.state.favorites.filter(item => item !== this.state.data[i]['id'])
+                favorites: res
             });
         }
+        localStorage.setItem("favArray",res);
+        console.log("Passing favorites: ", res);
     }
 
     getData() {
@@ -142,4 +152,5 @@ class App extends React.Component {
         </div>);
     }
 }
+
 ReactDOM.render(<App />, wrapper);
