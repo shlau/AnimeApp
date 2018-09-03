@@ -28,7 +28,6 @@ function Box(props) {
 }
 class Grid extends React.Component {
     renderBox(i) {
-/*         console.log("slug is", this.props.data[i]['attributes']['titles']['en']); */
         return (
             <Box
                 key={i}
@@ -42,17 +41,16 @@ class Grid extends React.Component {
         let srcImg;
         for (let i = 0; i < this.props.data.length; i++) {
             const match = this.props.favorites.filter(item => item == this.props.data[i]['id']);
-            console.log("current is", this.props.data[i]);
-            console.log("favorites is", this.props.favorites);
-            console.log("match length:", match.length);
             match.length == 0 ? srcImg = "icons/unchecked_favorites.png" : srcImg = "icons/checked_favorites.png";
             const titles = this.props.data[i]['attributes']['titles'];
+
+            /* there isn't a way to tell which keys are present, so grab the first one */
             const first = titles[Object.keys(titles)[0]];
             res.push(
                 <div key={i} className="item">
                     <p>{first}</p>
                     {this.renderBox(i)}
-                    <img onClick={()=>this.props.onClick(i)} className="favorite" src={srcImg} />
+                    <img onClick={() => this.props.onClick(i)} className="favorite" src={srcImg} />
                 </div>);
         }
         return res;
@@ -63,7 +61,10 @@ class Display extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: Array(10).fill({ id: 0, attributes: { posterImage: { large: "icons/loading_icon.png" }, titles: { en_us: "loading", en_jp:"loading", en:"loading" } } }),
+            /* include keys and default values in object to avoid null errors */
+            data: Array(10).fill({ id: 0, attributes: { posterImage: { large: "icons/loading_icon.png" }, titles: { en_us: "loading", en_jp: "loading", en: "loading" } } }),
+
+            /* check if anime has been favorited before */
             favorites: localStorage.getItem("favArray") !== null ? localStorage['favArray'].split(',') : []
         }
         this.handleSearchClick = this.handleSearchClick.bind(this);
@@ -72,7 +73,6 @@ class Display extends React.Component {
     }
 
     componentDidMount() {
-
         this.props.callback(this.handleSearchClick);
         $.getJSON(apiPath + '/trending/anime', (info) => {
             this.setState({
@@ -80,7 +80,7 @@ class Display extends React.Component {
             })
         });
     }
-    
+
     handleFavoriteClick(i) {
         const match = this.state.favorites.filter(item => item == this.state.data[i]['id']);
         let res;
@@ -89,7 +89,7 @@ class Display extends React.Component {
             this.setState({
                 favorites: res
             });
-            
+
         }
         else {
             res = this.state.favorites.filter(item => item !== this.state.data[i]['id']);
@@ -97,8 +97,7 @@ class Display extends React.Component {
                 favorites: res
             });
         }
-        localStorage.setItem("favArray",res);
-        console.log("Passing favorites: ", res);
+        localStorage.setItem("favArray", res);
     }
 
     getData() {
@@ -111,13 +110,11 @@ class Display extends React.Component {
     }
 
     handleSearchClick(terms) {
- /*        console.log("search Clicked!: ", terms); */
         const query = terms.replace(' ', '%20');
         xhr = new XMLHttpRequest();
         xhr.open('GET', apiPath + '/anime?filter[text]=' + query);
         xhr.addEventListener("readystatechange", this.getData);
         xhr.send();
-        console.log("data is: ", this.state.data);
     }
 
     render() {
@@ -127,7 +124,7 @@ class Display extends React.Component {
                 <Grid
                     data={this.state.data}
                     favorites={this.state.favorites}
-                    onClick = {i => this.handleFavoriteClick(i)}
+                    onClick={i => this.handleFavoriteClick(i)}
                 />
             </div>
         );
@@ -141,11 +138,14 @@ class App extends React.Component {
             childData: null,
         }
     }
+
+    /* get the search method from the display component */
     myCallback = (dataFromChild) => {
-/*         console.log("callback enabled!", dataFromChild); */
         this.setState({ childData: dataFromChild });
     }
+
     render() {
+        /* call the display component's search method with the search input */
         return (<div className="filler">
             <Search searchClick={() => this.state.childData(document.querySelector(".search input").value)} />
             <Display callback={this.myCallback} />

@@ -1,11 +1,9 @@
-/* const dataValue = localStorage['favArray'];
-console.log("Passed Value ", dataValue); */
+
 const apiPath = "https://kitsu.io/api/edge/anime?filter[id]=";
 const favs = document.querySelector(".favoritesList");
 let dataValue = localStorage['favArray'].split(",");
 let numFav = dataValue.length;
 function grabFavorites() {
-    res = [];
     $.each(dataValue,function(_,value) {
         $.getJSON(apiPath + value, (info) => {
             const titles = info['data'][0]['attributes']['titles'];
@@ -16,8 +14,6 @@ function grabFavorites() {
         });
     })
 
-    console.log(res);
-    return res;
 }
 
 grabFavorites();
